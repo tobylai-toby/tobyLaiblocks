@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>tobylai-blocks - beta</title>
+		<script src="blockly_compressed.js"></script>
+		<script src="blocks_compressed.js"></script>
+		<script src="javascript_compressed.js"></script>
+		<script src="msg/js/zh-hans.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/mdui/0.4.3/css/mdui.min.css">
+		<script src="https://cdnjs.loli.net/ajax/libs/mdui/0.4.3/js/mdui.min.js"></script>
+		<script src="msg/js/zh-hans.js"></script>
+
+	</head>
+
+	<body class="mdui-color-white">
+		<style>
+			body,html{
+			height: 100%;
+			
+		}
+		.blocklySvg{
+			background-image: '';
+		}
+	</style>
+		<div class="mdui-toolbar mdui-color-blue">
+			<a href="javascript:showCode();" class="mdui-btn">
+				<i class="mdui-icon material-icons">code</i>
+				显示代码
+				</a>
+			<!-- <a href="javascript:downcode();" class="mdui-btn">
+				<i class="mdui-icon material-icons">get_app</i>
+				下载代码
+				</a> -->
+			<a href="javascript:runCode();" class="mdui-btn "><i class="mdui-icon material-icons">forward</i>运行代码</a>
+			<a href="javascript:about();" class="mdui-btn "><i class="mdui-icon material-icons">forum</i>关于</a>
+		</div>
+
+		<div id="blocklyDiv" style="height: 92%;width: 100%;" class="mdui-color-white"></div>
+
+		<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+			<category name="逻辑" colour="%{BKY_LOGIC_HUE}">
+				<category name="如果">
+					<block type="controls_if"></block>
+					<block type="controls_if">
+						<mutation else="1"></mutation>
+					</block>
+					<block type="controls_if">
+						<mutation elseif="1" else="1"></mutation>
+					</block>
+				</category>
+				<category name="布尔值逻辑" colour="%{BKY_LOGIC_HUE}">
+					<block type="logic_compare"></block>
+					<block type="logic_operation"></block>
+					<block type="logic_negate"></block>
+					<block type="logic_boolean"></block>
+					<block type="logic_null"></block>
+					<block type="logic_ternary"></block>
+				</category>
+			</category>
+			<category name="循环" colour="%{BKY_LOOPS_HUE}">
+				<block type="controls_repeat_ext">
+					<value name="TIMES">
+						<block type="math_number">
+							<field name="NUM">10</field>
+						</block>
+					</value>
+				</block>
+				<block type="controls_whileUntil"></block>
+				<block type="controls_for">
+					<field name="变量">i</field>
+					<value name="FROM">
+						<block type="math_number">
+							<field name="NUM">1</field>
+						</block>
+					</value>
+					<value name="TO">
+						<block type="math_number">
+							<field name="NUM">10</field>
+						</block>
+					</value>
+					<value name="BY">
+						<block type="math_number">
+							<field name="NUM">1</field>
+						</block>
+					</value>
+				</block>
+				<block type="controls_forEach"></block>
+				<block type="controls_flow_statements"></block>
+			</category>
+			<category name="数学运算" colour="%{BKY_MATH_HUE}">
+				<block type="math_number">
+					<field name="NUM">123</field>
+				</block>
+				<block type="math_arithmetic"></block>
+				<block type="math_single"></block>
+				<block type="math_trig"></block>
+				<block type="math_constant"></block>
+				<block type="math_number_property"></block>
+				<block type="math_round"></block>
+				<block type="math_on_list"></block>
+				<block type="math_modulo"></block>
+				<block type="math_constrain">
+					<value name="LOW">
+						<block type="math_number">
+							<field name="NUM">1</field>
+						</block>
+					</value>
+					<value name="HIGH">
+						<block type="math_number">
+							<field name="NUM">100</field>
+						</block>
+					</value>
+				</block>
+				<block type="math_random_int">
+					<value name="FROM">
+						<block type="math_number">
+							<field name="NUM">1</field>
+						</block>
+					</value>
+					<value name="TO">
+						<block type="math_number">
+							<field name="NUM">100</field>
+						</block>
+					</value>
+				</block>
+				<block type="math_random_float"></block>
+				<block type="math_atan2"></block>
+			</category>
+			<category name="字符串" colour="%{BKY_TEXTS_HUE}">
+				<block type="text"></block>
+				<block type="text_length"></block>
+				<block type="text_print"></block>
+			</category>
+			<category name="数组运算" colour="%{BKY_LISTS_HUE}">
+				<block type="lists_create_empty"></block>
+				<block type="lists_create_with"></block>
+				<block type="lists_repeat">
+					<value name="NUM">
+						<block type="math_number">
+							<field name="NUM">5</field>
+						</block>
+					</value>
+				</block>
+				<block type="lists_length"></block>
+				<block type="lists_isEmpty"></block>
+				<block type="lists_indexOf"></block>
+				<block type="lists_getIndex"></block>
+				<block type="lists_setIndex"></block>
+			</category>
+			<sep></sep>
+			<category name="变量" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
+			</category>
+			<category name="函数" custom="PROCEDURE" colour="%{BKY_PROCEDURES_HUE}">
+			</category>
+
+		</xml>
+
+		<script>
+			window.alert = mdui.alert
+
+			function about() {
+				alert(`
+			tobylai-blocks - beta<br>
+			基于google blockly<br>
+			样式支持、翻译、开发：AC工作室toby
+			`)
+			}
+
+
+
+			var demoWorkspace = Blockly.inject('blocklyDiv', {
+				media: 'media/',
+				toolbox: document.getElementById('toolbox')
+			});
+			Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
+				demoWorkspace);
+
+			function showCode() {
+				Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+				var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+				if(code){
+					mdui.alert(code);
+				}else{
+					mdui.snackbar('请先把程序做好再生成代码哦~',timeout=1000)
+				}
+				
+			}
+			function downCode() {
+				Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+				var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+				if(code){
+					download(code,'代码.js')
+				}else{
+					mdui.snackbar('请先把程序做好再生成代码哦~',timeout=1000)
+				}
+				
+			}
+
+			function runCode() {
+				
+				window.LoopTrap = 1000;
+				Blockly.JavaScript.INFINITE_LOOP_TRAP =
+					'if (--window.LoopTrap == 0) throw "检测到循环会执行无限次，为了保证安全，已阻止。";\n';
+				var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+				Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+				if(code){
+					try {
+					eval(code);
+				} catch (e) {
+					alert(e);
+				}
+				}else{
+					mdui.snackbar('请先把程序做好再运行哦~',timeout=1000)
+				}
+				
+			}
+		</script>
+
+		</script>
+
+	</body>
+</html>
